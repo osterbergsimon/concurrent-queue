@@ -9,51 +9,58 @@
 void *runThread();
 int *extractedValue = 0;
 
-main(){
+void main(){
 	initialize_queue();
 	int i;
 
-	pthread_t N1;
-	for(i = 0; i<100; i++){
+	//pthread_t N1;
+	for(i = 0; i<10; i++){
 		enqueue(i);
+		display();
 	}
-	if(pthread_create(&N1, NULL, runThread, NULL)) {
+	/*if(pthread_create(&N1, NULL, runThread, NULL)) {
 		printf("Error creating thread\n");
 		//return 1;
-	}
+	}*/
 
 	runThread();
 
-
+	/*
 	if(pthread_join(N1, NULL)) {
 		printf("Error joining thread\n");
 		//return 2;
 	}
-
+	*/
 
 }
 
 void *runThread(){
-	int x = 50;
+	int x = 20;
 	srand(time(NULL));
 	int r = rand() % x;
-	int i;
+	int i = 10;
 
 
-	for(i=0; i<r; i++ ){
-		switch(r % 2){
+	for(i; i<x; i++ ){
+		switch(i % 3){
 			case (1) :
 				dequeue(extractedValue);
-				r = rand() % x;
+				r = rand();
+				printf("Switch dequeue\n");
+				break;
+			case (2) :
+				dequeue(extractedValue);
+				r = rand();
 				printf("Switch dequeue\n");
 				break;
 			default :
-				enqueue(r);
-				r= rand() % x;
-				printf("Switch default behaviour\n");
+				enqueue(i);
+				r= rand();
+				printf("Switch enqueued %d\n",i);
 				break;
-			}
 		}
-
-	return NULL;	
 	}
+
+		display();
+		return NULL;	
+}

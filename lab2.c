@@ -60,16 +60,33 @@ int dequeue(int *extractedValue)
     pthread_mutex_unlock(&lock);
     tmp=head;
     extractedValue=&(tmp->value);
+    printf("Extracted value: %d\n",*extractedValue);
     head=head->next;
     free(tmp);
     pthread_mutex_unlock(&lock);
     return *extractedValue;
 }
 
+void display()
+{
+     struct node *var=head;
+     if(var!=NULL)
+     {
+           printf("\nElements are as:  ");
+           while(var!=NULL)
+           {
+                printf("\t%d",var->value);
+                var=var->next;
+           }
+     printf("\n");
+     } 
+     else
+     printf("\nQueue is Empty");
+}
 
 int isEmpty()
 {
-    if(head->next==NULL)
+    if(head->next==dummy)
         return 1;
     else
         return 0;
