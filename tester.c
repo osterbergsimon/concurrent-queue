@@ -19,7 +19,7 @@ void main(){
 		enqueue(i);
 		display();
 	}
-	if(pthread_create(&N1, NULL, runThread2, NULL)) {
+	if(pthread_create(&N1, NULL, runThread, NULL)) {
 		printf("Error creating thread\n");
 		//return 1;
 	}
@@ -43,44 +43,8 @@ void *runThread(){
 
 
 	for(i; i<x; i++ ){
-		switch(i % 3){
-			case (1) :
-				dequeue(extractedValue);
-				r = rand();
-				printf("Switch dequeue\n");
-				break;
-			case (2) :
-				dequeue(extractedValue);
-				r = rand();
-				printf("Switch dequeue\n");
-				break;
-			default :
-				enqueue(i);
-				r= rand();
-				printf("Switch enqueued %d\n",i);
-				break;
-		}
-	}
-
-	return NULL;	
-}
-
-
-void *runThread2(){
-	int x = 60;
-	srand(time(NULL));
-	int r = rand() % x;
-	int i = 50;
-
-
-	for(i; i<x; i++ ){
 		switch(r % 2){
 			case (1) :
-				dequeue(extractedValue);
-				r = rand();
-				printf("Switch dequeue\n");
-				break;
-			case (2) :
 				dequeue(extractedValue);
 				r = rand();
 				printf("Switch dequeue\n");
