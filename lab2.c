@@ -8,12 +8,6 @@ struct node
     struct node *next;
 }*dummy=NULL,*head=NULL,*tail=NULL;
 
-/*struct queue
-{
-    node *head:
-    node *tail;
-    node *dummy;
-};*/
 
 pthread_mutex_t lock;
 

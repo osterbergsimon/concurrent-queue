@@ -4,32 +4,36 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-
-
 void *runThread();
-void *runThread2();
 int *extractedValue = 0;
 
-void main(){
-	initialize_queue();
-	int i;
 
-	pthread_t N1;
-	for(i = 1; i<10; i++){
+void main(int argc, char *argv[]){
+    if(argc<=1) {
+        printf("You did not feed me arguments, I will die now :( \n");
+        exit(1);
+     } 
+
+	initialize_queue();
+	int i, NTHREADS=atoi(argv[1]);
+
+	for(i = 0; i<10; i++){
 		enqueue(i);
 		display();
 	}
-	if(pthread_create(&N1, NULL, runThread, NULL)) {
-		printf("Error creating thread\n");
-		//return 1;
-	}
 
-	runThread();
-
-	if(pthread_join(N1, NULL)) {
-		printf("Error joining thread\n");
-		//return 2;
-	}
+  pthread_t threads[NTHREADS];
+  int k, j;
+	     
+  for(k=0; k < NTHREADS; k++){
+    pthread_create( &threads[k], NULL, runThread, NULL );
+  }
+  
+  runThread();
+	   
+  for(j=0; j < NTHREADS; j++){
+    pthread_join( threads[j], NULL);
+  }
 
 	display();
 
@@ -50,7 +54,7 @@ void *runThread(){
 				printf("Switch dequeue\n");
 				break;
 			default :
-				enqueue(i);
+				enqueue(r % 100000);
 				r= rand();
 				printf("Switch enqueued %d\n",i);
 				break;
