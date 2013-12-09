@@ -24,7 +24,7 @@ void initialize_queue(){
     dummy=(struct node *)malloc(sizeof(struct node));
     head->next = dummy;
     tail = dummy;
-    dummy->next = NULL;
+    dummy= NULL;
     if (pthread_mutex_init(&lock, NULL) != 0){
         printf("\n mutex init failed\n");
     }
@@ -41,11 +41,12 @@ void enqueue(int val)
     }
     pthread_mutex_lock(&lock);
     tmp->value = val;
-    tmp->next=NULL;
+    tmp->next=dummy;
     if(head->next==dummy)
         head=tmp;
     tail->next = tmp;
     tail=tmp;
+    tail->next = dummy;
     pthread_mutex_unlock(&lock);
 }
 
@@ -57,7 +58,7 @@ int dequeue(int *extractedValue)
         printf("Queue Empty\n");
         exit(1);
     }
-    pthread_mutex_unlock(&lock);
+    pthread_mutex_lock(&lock);
     tmp=head;
     extractedValue=&(tmp->value);
     printf("Extracted value: %d\n",*extractedValue);
@@ -70,10 +71,10 @@ int dequeue(int *extractedValue)
 void display()
 {
      struct node *var=head;
-     if(var!=NULL)
+     if((var->next)!=NULL)
      {
            printf("\nElements are as:  ");
-           while(var!=NULL)
+           while((var->next)!=NULL)
            {
                 printf("\t%d",var->value);
                 var=var->next;
