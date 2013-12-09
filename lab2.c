@@ -19,6 +19,9 @@ pthread_mutex_t lock;
 
 
 void initialize_queue(){
+    head=(struct node *)malloc(sizeof(struct node));
+    tail=(struct node *)malloc(sizeof(struct node));
+    dummy=(struct node *)malloc(sizeof(struct node));
     head->next = dummy;
     tail = dummy;
     dummy->next = NULL;
@@ -56,7 +59,7 @@ int dequeue(int *extractedValue)
     }
     pthread_mutex_unlock(&lock);
     tmp=head;
-    *extractedValue=tmp->value;
+    extractedValue=&(tmp->value);
     head=head->next;
     free(tmp);
     pthread_mutex_unlock(&lock);
