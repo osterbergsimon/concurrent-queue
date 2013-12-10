@@ -17,8 +17,12 @@ void initialize_queue(){
     tail=(struct node *)malloc(sizeof(struct node));
     dummy=(struct node *)malloc(sizeof(struct node));
     dummy -> next = NULL; //dummy = NULL => nollor
-    head = tail = dummy;
-    head->next = NULL;
+    //head = tail = dummy;
+    //head->next = NULL;
+    head -> value = 0;
+    head -> next = NULL;
+    tail -> value = 0;
+    tail -> next = NULL;
     if (pthread_mutex_init(&head_lock, NULL) != 0){
         printf("\n mutex init failed\n");
     }
@@ -55,23 +59,27 @@ void enqueue(int val)
     {
         printf("Error\n");
         free(tmp);
-    }
-    else{
+    } else if (isEmpty()) {
+        tail->value = val;
+        tail->next=NULL;
+        
+        //tmp->value = val;
+        //tmp->next=NULL;
+        //tail->next = tmp;
+        //free(head);
+        pthread_mutex_lock(&head_lock);
+        head -> next = tail;
+        pthread_mutex_unlock(&head_lock);
+        
+        //printf("Enqueued empty %d\n", val);
+    } else {
         tmp->value = val;
         tmp->next=NULL;
+        tail->next = tmp;
+        tail = tmp;
+        //printf("Enqueued tmp: %d\n", (tmp->value));
     }
 
-    if(isEmpty()) {
-        head->next = tail;
-        printf("Enqueued empty\n");    
-    }
-    
-    tail->next = tmp;
-    if(head!=tail){
-    	tail=tmp;
-    	printf("Enqueued tmp: %d\n", (tail->value));
-    }
-    printf("Enqueued: %d\n", (tail->value));
     pthread_mutex_unlock(&tail_lock);
 }
 
@@ -82,15 +90,14 @@ int dequeue(int *extractedValue)
     int ret = -1;
     if(isEmpty())
     {
-        printf("dequeue: Queue Empty\n");
+        //printf("dequeue: Queue Empty\n");
         tail->next=NULL;
         pthread_mutex_unlock(&head_lock);
         
     }else{
         tmp=head->next;
         extractedValue=&(tmp->value);
-        //printf("Extracted value: %d\n",tmp->value);
-        printf("Extracted value: %d\n",*extractedValue);
+ 
         free(head);
         head=tmp;
         pthread_mutex_unlock(&head_lock);
@@ -130,6 +137,13 @@ void dispNode() {
          printf("\n head->next value NULL");
      }
      printf("\n tail value %d",tail->value);
+     struct node *var2=tail->next;
+     if(var2!=NULL)
+     {
+         printf("\n tail->next value %d",var->value);
+     } else {
+         printf("\n tail->next value NULL");
+     }
      printf("\n\n");
 }
 

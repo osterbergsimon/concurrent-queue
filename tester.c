@@ -10,13 +10,12 @@ void *runThread2();
 int *extractedValue = 0;
 
 
-
 void main(int argc, char *argv[]){
   if(argc<=1) {
     printf("You did not feed me arguments, I will die now :( \n");
     exit(1);
   }
-  printf("main: Empty?: %d",isEmpty());
+  
   initialize_queue();
   int i, NTHREADS=atoi(argv[1]);
 
@@ -25,14 +24,15 @@ void main(int argc, char *argv[]){
   //}
         
   display();
-  printf("main 2: Empty?: %d\n",isEmpty());
-  struct timeval t1, t2;
-  double elapsedTime;
-  gettimeofday(&t1, NULL);
+  printf("main: Empty?: %d\n",isEmpty());
+  struct timeval start, end;
+  long mtime, seconds, useconds;  
+  gettimeofday(&start, NULL);
 
   pthread_t threads[NTHREADS];
   int k, j;
-        
+    
+  
   for(k=0; k < NTHREADS; k++){
     pthread_create( &threads[k], NULL, runThread2, NULL );
   }
@@ -41,14 +41,14 @@ void main(int argc, char *argv[]){
     pthread_join( threads[j], NULL);
   }
   
-  gettimeofday(&t2, NULL);
+  gettimeofday(&end, NULL);
 
   display();
   
-  elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
-  elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
-  //cout << elapsedTime << " ms.\n";
-  printf("%.4lf ms elapsed\n", elapsedTime); 
+    //seconds  = t2.tv_sec  - t1.tv_sec;
+    //useconds = t2.tv_usec - t1.tv_usec;
+    printf("%ld usec?\n", ((end.tv_sec * 1000000 + end.tv_usec)
+		  - (start.tv_sec * 1000000 + start.tv_usec)));
 }
 
 void *runThread(){
@@ -79,46 +79,18 @@ void *runThread(){
 
 
 void *runThread2(){
-  int x = 50;
-  int i;
+  int x=60, i, y=0;
 
-  //for(i=0;i<60;i++){
-    enqueue(123);
-  //}
-  //printf("runThread2: Empty?: %d\n",isEmpty());
-  //display();
-
-   // dispNode();
-  //for(i=0;i=x;i++){
-    dequeue(extractedValue);
-    dequeue(extractedValue);
-    dequeue(extractedValue);
-    dequeue(extractedValue);
-    dequeue(extractedValue);
-    dequeue(extractedValue);
-    
-    //dispNode();
-    
-    enqueue(100);
-    //dispNode();
-    enqueue(101);
-    //dispNode();
-
-    dequeue(extractedValue);
-    //dispNode();
-
-  //}
-    printf("runThread2 2: Empty?: %d\n",isEmpty());
- 
-
- /* printf("Empty?: %d\n",isEmpty());
-    for(i=40;i<x;i++){
+  for(i=y;i<x;i++){
     enqueue(i);
   }
-  printf("Empty?: %d\n",isEmpty());
-    for(i=0;i=x;i++){
+
+    display();
+  
+  for(i=0;i<50;i++) {
     dequeue(extractedValue);
-  }*/
+    //printf("HAAAANDS\n");
+  }
 
   return NULL;
 
