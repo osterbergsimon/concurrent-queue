@@ -12,8 +12,6 @@ pthread_mutex_t head_lock, tail_lock;
 
 
 void initialize_queue(){
-    head=(struct node *)malloc(sizeof(struct node));
-    tail=(struct node *)malloc(sizeof(struct node));
     dummy=(struct node *)malloc(sizeof(struct node));
     dummy -> next = NULL;
     head = dummy;
@@ -28,7 +26,7 @@ void initialize_queue(){
 
 void enqueue(int val)
 {
-    pthread_mutex_lock(&tail_lock);
+
 
     struct node *tmp;
     tmp=(struct node *)malloc(sizeof(struct node));
@@ -39,6 +37,7 @@ void enqueue(int val)
     }
     tmp->value = val;
     tmp->next = NULL;
+    pthread_mutex_lock(&tail_lock);
     tail->next = tmp;
     tail=tmp;
     pthread_mutex_unlock(&tail_lock);
@@ -46,21 +45,22 @@ void enqueue(int val)
 
 int dequeue(int *extractedValue)
 {
+
+	struct node *currHead, *nextHead;
     pthread_mutex_lock(&head_lock);
- 	struct node *h, *n;
-    
- 	h = head;
- 	n = h->next;
- 	if(n == NULL){
+ 	currHead = head;
+ 	nextHead = currHead->next;
+ 	if(nextHead == NULL){
  		pthread_mutex_unlock(&head_lock);
         return 1;
  	}
- 	head = n;
- 	extractedValue=&(n->value);
+ 	free(head);
+ 	head = nextHead;
+ 	*extractedValue=nextHead->value;
  	pthread_mutex_unlock(&head_lock);
- 	if (head == dummy){
- 		enqueue(h->value);
- 	}
+ 	/*if (head == dummy){
+ 		enqueue(currHead->value);
+ 	}*/
  	return 0;
 
 }
@@ -70,7 +70,7 @@ void display()
      struct node *var=head->next;
      if(var!=NULL)
      {
-           printf("\nElements are as: ");
+           printf("\nElements are as: \n");
            while(var!=NULL)
            {
                 printf("\t%d",var->value);

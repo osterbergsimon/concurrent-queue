@@ -7,7 +7,8 @@
 
 void *runThread();
 void *runThread2();
-int *extractedValue = 0;
+
+int extractedValue = 0;
 int NTHREADS = 1;
 
 void main(int argc, char *argv[]){
@@ -22,9 +23,9 @@ void main(int argc, char *argv[]){
   NTHREADS=atoi(argv[1]);
   printf("X: %d\n",(10000000/NTHREADS));
 
-  for(i = 0; i<100; i++){
+  /*for(i = 0; i<100; i++){
     enqueue(i);
-  }
+  }*/
 
   struct timeval start, end;
   long seconds, useconds;  
@@ -35,7 +36,7 @@ void main(int argc, char *argv[]){
 
   gettimeofday(&start, NULL);
   for(k=0; k < NTHREADS; k++){
-    pthread_create( &threads[k], NULL, runThread, &NTHREADS );
+    pthread_create( &threads[k], NULL, runThread2, &NTHREADS );
   }
         
   for(j=0; j < NTHREADS; j++){
@@ -60,15 +61,30 @@ void *runThread(){
         for(i; i<x; i++ ){
                 switch(r % 2){
                         case (1) :
-                                dequeue(extractedValue);
+                                dequeue(&extractedValue);
                                 r = rand();
                                 break;
                         default :
-                                enqueue(r % 343);
+                                enqueue(r % 999);
                                 r= rand();
                                 break;
                 }
         }
 
         return NULL;        
+}
+
+
+void *runThread2(){
+  int i=0;
+  
+  for(i=0; i<50; i++){
+    enqueue(i);
+  }
+
+  for(i=0; i<50; i++){
+    dequeue(&extractedValue);
+  }
+
+
 }
