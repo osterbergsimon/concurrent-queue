@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "lab2.h"
+//#include "lab2.h"
+#include "concurrent_queue_2locks.h"
 #include <sys/time.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -15,7 +16,7 @@ void main(int argc, char *argv[]){
     printf("You did not feed me arguments, I will die now :( \n");
     exit(1);
   }
-  printf("Empty?: %d\n",isEmpty());
+  printf("main: Empty?: %d",isEmpty());
   initialize_queue();
   int i, NTHREADS=atoi(argv[1]);
 
@@ -24,7 +25,7 @@ void main(int argc, char *argv[]){
   //}
         
   display();
-  printf("Empty?: %d\n",isEmpty());
+  printf("main 2: Empty?: %d\n",isEmpty());
   struct timeval t1, t2;
   double elapsedTime;
   gettimeofday(&t1, NULL);
@@ -84,10 +85,10 @@ void *runThread2(){
   //for(i=0;i<60;i++){
     enqueue(123);
   //}
-  printf("Empty?: %d\n",isEmpty());
-  display();
+  //printf("runThread2: Empty?: %d\n",isEmpty());
+  //display();
 
-
+   // dispNode();
   //for(i=0;i=x;i++){
     dequeue(extractedValue);
     dequeue(extractedValue);
@@ -95,16 +96,19 @@ void *runThread2(){
     dequeue(extractedValue);
     dequeue(extractedValue);
     dequeue(extractedValue);
-
+    
+    //dispNode();
+    
     enqueue(100);
+    //dispNode();
     enqueue(101);
-    enqueue(102);
-    enqueue(103);
-    display();
+    //dispNode();
+
     dequeue(extractedValue);
+    //dispNode();
 
   //}
-    printf("Empty?: %d\n",isEmpty());
+    printf("runThread2 2: Empty?: %d\n",isEmpty());
  
 
  /* printf("Empty?: %d\n",isEmpty());

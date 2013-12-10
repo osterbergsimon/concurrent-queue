@@ -61,9 +61,15 @@ void enqueue(int val)
         tmp->next=NULL;
     }
 
+    if(isEmpty()) {
+        head->next = tail;
+        printf("Enqueued empty\n");    
+    }
+    
     tail->next = tmp;
     if(head!=tail){
     	tail=tmp;
+    	printf("Enqueued tmp: %d\n", (tail->value));
     }
     printf("Enqueued: %d\n", (tail->value));
     pthread_mutex_unlock(&tail_lock);
@@ -76,8 +82,8 @@ int dequeue(int *extractedValue)
     int ret = -1;
     if(isEmpty())
     {
-        //printf("Queue Empty\n");
-        tail=dummy;
+        printf("dequeue: Queue Empty\n");
+        tail->next=NULL;
         pthread_mutex_unlock(&head_lock);
         
     }else{
@@ -106,10 +112,25 @@ void display()
                 printf("\t%d",var->value);
                 var=var->next;
            }
+           
      printf("\n");
      }
      else
-     printf("\nQueue is Empty\n");
+     printf("\ndisplay: Queue is Empty\n");
+}
+
+void dispNode() {
+     struct node *var=head->next;
+     printf("\n--- dispNode: ---");
+     printf("\n head value %d",head->value);
+     if(var!=NULL)
+     {
+         printf("\n head->next value %d",var->value);
+     } else {
+         printf("\n head->next value NULL");
+     }
+     printf("\n tail value %d",tail->value);
+     printf("\n\n");
 }
 
 int isEmpty()
