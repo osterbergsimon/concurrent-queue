@@ -8,33 +8,35 @@
 void *runThread();
 void *runThread2();
 int *extractedValue = 0;
-
+int NTHREADS = 1;
 
 void main(int argc, char *argv[]){
   if(argc<=1) {
     printf("You did not feed me arguments, I will die now :( \n");
     exit(1);
   }
+
   
   initialize_queue();
-  int i, NTHREADS=atoi(argv[1]);
+  int i; 
+  NTHREADS=atoi(argv[1]);
 
-  //for(i = 0; i<10; i++){
-  //   enqueue(i);
-  //}
+  for(i = 0; i<100; i++){
+    enqueue(i);
+  }
         
-  display();
-  printf("main: Empty?: %d\n",isEmpty());
+  //display();
+  //printf("main: Empty?: %d\n",isEmpty());
   struct timeval start, end;
   long mtime, seconds, useconds;  
   gettimeofday(&start, NULL);
 
   pthread_t threads[NTHREADS];
   int k, j;
+
     
-  
   for(k=0; k < NTHREADS; k++){
-    pthread_create( &threads[k], NULL, runThread2, NULL );
+    pthread_create( &threads[k], NULL, runThread, &NTHREADS );
   }
         
   for(j=0; j < NTHREADS; j++){
@@ -43,7 +45,7 @@ void main(int argc, char *argv[]){
   
   gettimeofday(&end, NULL);
 
-  display();
+  //display();
   
     //seconds  = t2.tv_sec  - t1.tv_sec;
     //useconds = t2.tv_usec - t1.tv_usec;
@@ -52,11 +54,12 @@ void main(int argc, char *argv[]){
 }
 
 void *runThread(){
-        int x = 40;
+        int y = 10000000;
+        int x = y/NTHREADS;
+        printf("X: %d\n",x);
         srand(time(NULL));
-        int r = rand() % x;
-        int i = 10;
-
+        int r = rand();
+        int i = 0;
 
         for(i; i<x; i++ ){
                 switch(r % 2){
@@ -74,24 +77,4 @@ void *runThread(){
         }
 
         return NULL;        
-}
-
-
-
-void *runThread2(){
-  int x=60, i, y=0;
-
-  for(i=y;i<x;i++){
-    enqueue(i);
-  }
-
-    display();
-  
-  for(i=0;i<50;i++) {
-    dequeue(extractedValue);
-    //printf("HAAAANDS\n");
-  }
-
-  return NULL;
-
 }
