@@ -1,6 +1,6 @@
 #include <stdio.h>
-//#include "lab2.h"
 #include "concurrent_queue_2locks.h"
+#include "concurrent_queue.h"
 #include <sys/time.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -20,21 +20,20 @@ void main(int argc, char *argv[]){
   initialize_queue();
   int i; 
   NTHREADS=atoi(argv[1]);
+  printf("X: %d\n",(10000000/NTHREADS));
 
   for(i = 0; i<100; i++){
     enqueue(i);
   }
-        
-  //display();
-  //printf("main: Empty?: %d\n",isEmpty());
+
   struct timeval start, end;
-  long mtime, seconds, useconds;  
-  gettimeofday(&start, NULL);
+  long seconds, useconds;  
+
 
   pthread_t threads[NTHREADS];
   int k, j;
 
-    
+  gettimeofday(&start, NULL);
   for(k=0; k < NTHREADS; k++){
     pthread_create( &threads[k], NULL, runThread, &NTHREADS );
   }
@@ -46,17 +45,14 @@ void main(int argc, char *argv[]){
   gettimeofday(&end, NULL);
 
   //display();
-  
-    //seconds  = t2.tv_sec  - t1.tv_sec;
-    //useconds = t2.tv_usec - t1.tv_usec;
-    printf("%ld usec?\n", ((end.tv_sec * 1000000 + end.tv_usec)
-		  - (start.tv_sec * 1000000 + start.tv_usec)));
+
+    printf("%ldms\n", ((end.tv_sec * 1000000 + end.tv_usec)
+		  - (start.tv_sec * 1000000 + start.tv_usec))/1000);
 }
 
 void *runThread(){
         int y = 10000000;
         int x = y/NTHREADS;
-        printf("X: %d\n",x);
         srand(time(NULL));
         int r = rand();
         int i = 0;
@@ -66,11 +62,9 @@ void *runThread(){
                         case (1) :
                                 dequeue(extractedValue);
                                 r = rand();
-                                //printf("Switch dequeue\n");
                                 break;
                         default :
                                 enqueue(r % 343);
-                                //printf("Switch enqueued %d\n",r % 343);
                                 r= rand();
                                 break;
                 }

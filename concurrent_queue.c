@@ -8,17 +8,15 @@ struct node
     struct node *next;
 }*dummy=NULL,*head=NULL,*tail=NULL;
 
-
 pthread_mutex_t lock;
-
 
 void initialize_queue(){
     head=(struct node *)malloc(sizeof(struct node));
     tail=(struct node *)malloc(sizeof(struct node));
     dummy=(struct node *)malloc(sizeof(struct node));
-    head->next = dummy;
+    dummy -> next = NULL;
+    head = dummy;
     tail = dummy;
-    dummy->next = NULL; //dummy = NULL => nollor
     if (pthread_mutex_init(&lock, NULL) != 0){
         printf("\n mutex init failed\n");
     }
@@ -26,18 +24,17 @@ void initialize_queue(){
 
 void enqueue(int val)
 {
+    pthread_mutex_lock(&lock);
+
     struct node *tmp;
     tmp=(struct node *)malloc(sizeof(struct node));
     if(tmp==NULL)
     {
         printf("Error\n");
-        return;
+        free(tmp);
     }
-    pthread_mutex_lock(&lock);
     tmp->value = val;
-    tmp->next=NULL; //tmp->next=dummy när dummy=NULL => nollor
-    if(head->next==dummy)
-        head=tmp;
+    tmp->next = NULL;
     tail->next = tmp;
     tail=tmp;
     pthread_mutex_unlock(&lock);
@@ -45,42 +42,30 @@ void enqueue(int val)
 
 int dequeue(int *extractedValue)
 {
-    struct node *tmp;
-    if( isEmpty( ) )
-    {
-        printf("Queue Empty\n");
-        exit(1);
-    }
     pthread_mutex_lock(&lock);
-    tmp=head;
-    extractedValue=&(tmp->value);
-    printf("Extracted value: %d\n",*extractedValue);
-    head=head->next;
-    free(tmp);
+    struct node *h, *n;
+    
+    h = head;
+    n = h->next;
+    if(n == NULL){
+        pthread_mutex_unlock(&lock);
+        return 1;
+    }
+    head = n;
+    extractedValue=&(n->value);
     pthread_mutex_unlock(&lock);
-    return *extractedValue;
-}
+    if (head == dummy){
+        enqueue(h->value);
+    }
+    return 0;
 
-void display()
-{
-     struct node *var=head;
-     if(var!=NULL)
-     {
-           printf("\nElements are as: ");
-           while(var!=NULL)
-           {
-                printf("\t%d",var->value);
-                var=var->next;
-           }
-     printf("\n");
-     }
-     else
-     printf("\nQueue is Empty");
 }
 
 int isEmpty()
 {
-    if(head->next==dummy)
+    if(head==NULL)
+        return 1;
+    else if(head->next==NULL)
         return 1;
     else
         return 0;
